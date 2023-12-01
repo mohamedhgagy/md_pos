@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_md_company_form" model="ir.ui.view">
+        <field name="name">res.company.form.inherit.md_connector</field>
+        <field name="model">res.company</field>
+        <field name="inherit_id" ref="base.view_company_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page name="md_info" string="MD Info">
+                    <div class="col-12">
+                                <button name="action_authenticate" type="object" string="Authenticate"
+                                     class="oe_stat_button btn-success mx-2 px-2" style="float:right !important;"
+                                        attrs="{'invisible': [('authenticated', '=', True)]}"
+                                />
+
+                                <button name="action_authenticate" type="object" string="Refresh Token"
+                                     class="oe_stat_button btn-success mx-2 px-2" style="float:right !important;"
+                                        attrs="{'invisible': [('authenticated', '=', False)]}"
+                                        context="{'refresh_token': True}"
+                                />
+
+                    </div>
+                    <group name="md_info">
+                        <group>
+                            <field name="authenticated" readonly="1" />
+                            <field name="md_user" />
+                            <field name="md_password" password="True" />
+                            <field name="md_token" groups="base.group_no_one" invisible="1" readonly="1"
+                                   force_save="1"/>
+                        </group>
+                    </group>
+
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

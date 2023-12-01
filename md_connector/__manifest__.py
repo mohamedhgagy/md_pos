@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "md_connector",
+    'name': "MD Pos",
 
     'summary': """
         Short (1 phrase/line) summary of the module's purpose, used as
@@ -20,16 +20,21 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base'],
+    'depends': ['base', 'point_of_sale'],
 
     # always loaded
     'data': [
         # 'security/ir.model.access.csv',
-        'views/views.xml',
-        'views/templates.xml',
+        'views/setting_views.xml',
+        'views/res_company_views.xml',
+        'views/pos_config_views.xml',
+
     ],
     # only loaded in demonstration mode
     'demo': [
         'demo/demo.xml',
     ],
+    "installable": True,
+    "auto_install": False,
+    "application": True,
 }
