@@ -28,6 +28,7 @@
         'views/setting_views.xml',
         'views/res_company_views.xml',
         'views/pos_config_views.xml',
+        'views/menu.xml',
 
     ],
     # only loaded in demonstration mode

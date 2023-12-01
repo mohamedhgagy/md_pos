@@ -23,7 +23,7 @@ class AbstractRequestManager(models.AbstractModel):
         try:
             if payload and not headers:
                 response = requests.post(full_url, json=payload)
-            elif payload and headers:
+            elif not payload and headers:
                 response = requests.post(full_url, headers=headers)
             else:
                 response = requests.post(full_url, headers=headers, json=payload)

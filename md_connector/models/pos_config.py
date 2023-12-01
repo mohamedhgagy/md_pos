@@ -65,6 +65,7 @@ class PosConfig(models.Model):
                 for pos in pos_ids:
                     account_id = pos.get('account_id', False)
                     if account_id:
+                        account_id = int(account_id)
                         pos_list = self._get_pos_info(account_id)
                         pos_object = {}
                         if pos_list and pos_list[0].get('isSuccess', False):
@@ -78,11 +79,19 @@ class PosConfig(models.Model):
                             pos_id.update(prepared_pos_vals)
 
                 if pos_vals_list:
-                    self.create(pos_vals_list)
-
+                    for pos_val in pos_vals_list:
+                        self.create(pos_val)
+            else:
+                pos_info = response[0].get('POS_info')
+                if pos_info:
+                    prepared_pos_vals = self._prepare_pos_vals(pos_info[0])
+                    self.create(prepared_pos_vals)
     def _prepare_pos_vals(self, pos) -> dict:
         if not pos:
             return {}
+        contracting_date = pos.get('Contracting_Date', False)
+        contracting_date = "1900-01-01" if contracting_date == "0000-00-00" else contracting_date
+        # TODO: assign location
         return {
             'md_pos_id': pos.get('POS_ID', False),
             'name': pos.get('Name_En', False),
@@ -101,7 +110,7 @@ class PosConfig(models.Model):
             'rep_id': pos.get('Rep_ID', False),
             'special_access_group': pos.get('Special_Access_Group', False),
             'pos_phone': pos.get('POS_Phone', False),
-            'contracting_date': pos.get('Contracting_Date', False),
+            'contracting_date': contracting_date,
             'license_cr': pos.get('License/CR', False),
             'registration': pos.get('Registration', False),
             'channel_name': pos.get('Channel_Name', False),

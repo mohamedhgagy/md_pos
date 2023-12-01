@@ -48,7 +48,6 @@ class ResCompany(models.Model):
             self.authenticated = True
             if not self.md_token or self._context.get('refresh_token', False):
                 self.md_token = response[0].get('token')
-                # self.env['pos.config'].action_poll_pos() just for test
         else:
             self.authenticated = False
             self.md_token = False
