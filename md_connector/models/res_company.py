@@ -17,6 +17,7 @@ class ResCompany(models.Model):
     _name = 'res.company'
     _inherit = ["res.company", 'md_connector.abstract_request_manager']
 
+    base_url = fields.Char(default="https://md-sa.net")
     md_user = fields.Char(default="MD")
     md_password = fields.Char(default="TestPassword")
     md_token = fields.Char()
@@ -43,7 +44,7 @@ class ResCompany(models.Model):
             "userid": self.md_user,
             "Password": self.md_password
         }
-        response = self._send_request(payload=payload, endpoint='/mdsa/API/login.php')
+        response = self._send_request(payload=payload, endpoint='/mdsa/API/login.php',url=self.base_url)
         if response and response[0].get('isSuccess', False):
             self.authenticated = True
             if not self.md_token or self._context.get('refresh_token', False):

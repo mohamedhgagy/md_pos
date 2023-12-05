@@ -1,2 +1,4 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_md_connector_md_connector,md_connector.md_connector,model_md_connector_md_connector,base.group_user,1,1,1,1
+access_pwd_connector,access.pwd.connector,model_pwd_connector,base.group_user,1,1,1,1
+access_pop_message,access.pop.message,model_pop_message,base.group_user,1,1,1,1
+access_pwd_operation,access.pwd.operation,model_pwd_operation,base.group_user,1,1,1,1

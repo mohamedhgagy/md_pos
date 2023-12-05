@@ -24,11 +24,19 @@
 
     # always loaded
     'data': [
-        # 'security/ir.model.access.csv',
-        'views/setting_views.xml',
-        'views/res_company_views.xml',
-        'views/pos_config_views.xml',
+        'security/ir.model.access.csv',
+        'security/security.xml',
+        'views/res_users_views.xml',
+        'views/connector_view.xml',
+        # 'views/setting_views.xml',
+        # 'views/res_company_views.xml',
+
+        'views/res_partner_views.xml',
         'views/menu.xml',
+
+        'wizard/message_view.xml',
+
+        'wizard/pwd_operation_views.xml'
 
     ],
     # only loaded in demonstration mode

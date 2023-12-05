@@ -23,6 +23,7 @@
                     <group name="md_info">
                         <group>
                             <field name="authenticated" readonly="1" />
+                            <field name="base_url" />
                             <field name="md_user" />
                             <field name="md_password" password="True" />
                             <field name="md_token" groups="base.group_no_one" invisible="1" readonly="1"

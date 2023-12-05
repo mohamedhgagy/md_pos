@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_pwd_operation_form" model="ir.ui.view">
+            <field name="name">view.pwd.operation.form</field>
+            <field name="model">pwd.operation</field>
+            <field name="arch" type="xml">
+                <form string="pwd Operations">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="pwd_instance_id" required="1"
+
+                                    options="{'no_open': True, 'no_create': True, 
+                                    'no_create_edit': True}"/>
+                                <field name="from_date" 
+                                    attrs="{'invisible': [('operation', '!=', 'sync_orders')]}"/>
+                            </group>
+                            <group>
+                                <field name="operation" required="1"/>
+                            </group>
+                        </group>
+                        <footer>
+                            <button name="pwd_execute" string="Execute"
+                                    type="object"
+                                    class="oe_highlight"/>
+                            <button string="Close" class="oe_highlight" special="cancel"/>
+                        </footer>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_pwd_operation" model="ir.actions.act_window">
+            <field name="name">pwd Operations</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">pwd.operation</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="view_id" ref="md_connector.view_pwd_operation_form"/>
+        </record>
+
+        <menuitem name="Operations" id="menu_pwd_operation"
+            parent="md_connector.pwd_connector_menu_root"
+            action="action_pwd_operation"/>
+    </data>
+</odoo>

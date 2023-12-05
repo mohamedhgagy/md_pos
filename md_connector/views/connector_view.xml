@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- <record id="pwd_connector_list_view" model="ir.ui.view">
+        <field name="name">pwd.connector.list.view</field>
+        <field name="model">pwd.connector</field>
+        <field name="arch" type="xml">
+            <tree string="pwd Connector">
+                <field name="name"/>
+                <field name="import_option"/>
+                <field name="data_access_url"/>
+                <field name="order_date"/>
+            </tree>
+        </field>
+    </record> -->
+
+
+
+
+    <record id="pwd_connector_list_view" model="ir.ui.view">
+        <field name="name">pwd.connector.list.view</field>
+        <field name="model">pwd.connector</field>
+        <field name="arch" type="xml">
+            <tree string="pwd Connector">
+                <field name="business_name"/>
+                <field name="md_user"/>
+                <field name="company_id"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="pwd_connector_form_view" model="ir.ui.view">
+        <field name="name">pwd.connector.form.view</field>
+        <field name="model">pwd.connector</field>
+        <field name="arch" type="xml">
+            <form string="pwd Connector">
+                <header>
+                    <div class="col-12">
+                                <button name="action_authenticate" type="object" string="Authenticate"
+                                     class="oe_stat_button btn-success mx-2 px-2" style="float:right !important;"
+                                        attrs="{'invisible': [('authenticated', '=', True)]}"
+                                />
+
+                                <button name="action_authenticate" type="object" string="Refresh Token"
+                                     class="oe_stat_button btn-success mx-2 px-2" style="float:right !important;"
+                                        attrs="{'invisible': [('authenticated', '=', False)]}"
+                                        context="{'refresh_token': True}"
+                                />
+
+                    </div>
+
+<!--                    <field name="state" widget="statusbar" -->
+<!--                        statusbar_visible="authenticate,authenticated"/>-->
+                </header>
+                <sheet>
+
+                    <group name="md_info">
+                        <group>
+                            <field name="authenticated" readonly="1" />
+                            <field name="business_name" />
+                            <field name="base_url" />
+                            <field name="md_user" />
+                            <field name="md_password" password="True" />
+                            <field name="company_id" password="True" />
+                            <field name="md_token" groups="base.group_no_one" invisible="1" readonly="1"
+                                   force_save="1"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+<!--    <record id="action_pwd_connector" model="ir.actions.act_window">-->
+<!--        <field name="name">pwd Connector</field>-->
+<!--        <field name="type">ir.actions.act_window</field>-->
+<!--        <field name="res_model">pwd.connector</field>-->
+<!--        <field name="view_mode">tree,form</field>-->
+<!--    </record>-->
+
+<!--    &lt;!&ndash; Main Menus &ndash;&gt;-->
+<!--    <menuitem id="pwd_connector_menu_root"-->
+<!--            name="PWD Connector"-->
+<!--            web_icon="md_connector,static/description/pwd.png"-->
+<!--            sequence="1"  groups="md_connector.group_md_connector_users,md_connector.group_md_connector_manager"  />-->
+
+<!--    <menuitem id="pwd_connector_menu"-->
+<!--            name="Connector"-->
+<!--            parent="md_connector.pwd_connector_menu_root"-->
+<!--            action="action_pwd_connector"-->
+<!--            sequence="1"/>-->
+</odoo>

@@ -16,9 +16,10 @@ class AbstractRequestManager(models.AbstractModel):
     _description = "Abstract Code Index"
     _abstract = True
 
-    def _send_request(self, payload=False, endpoint=False, headers=0) -> str:
-        base_url = self.env['ir.config_parameter'].sudo().get_param('md_connector.base_url',
-                                                                    'https://md-sa.net')
+    def _send_request(self, payload=False, url="https://md-sa.net",endpoint=False, headers=0) -> str:
+        # base_url = self.env['ir.config_parameter'].sudo().get_param('md_connector.base_url',
+        #                                                            'https://md-sa.net')
+        base_url =url
         full_url = f'{base_url}{endpoint}'
         try:
             if payload and not headers:
