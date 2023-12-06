@@ -35,7 +35,7 @@ class PwdConnector(models.Model):
             return False
 
     @property
-    def default_headres(self):
+    def default_headers(self):
         return {'Token': self.md_token}
 
     def action_authenticate(self):
@@ -102,12 +102,15 @@ class PwdConnector(models.Model):
                 response = MyUsers._get_user_info(account_id=last_users_id.md_account_id + 1, myconnect=self)
             else:
                 endpoint = '/mdsa/API/Rep_List.php'
-                response = self._send_request(headers=self.default_headres, endpoint=endpoint)
+                response = self._send_request(headers=self.default_headers, endpoint=endpoint)
                 print("response", response)
 
             MyUsers._proceed_response(response=response, myconnect=self)
         return self.success_popup('Users')
 
+    def get_info(self, payload, endpoint):
+        response = self._send_request(payload=payload, headers=self.default_headers, endpoint=endpoint)
+        return response
     # @api.model
     # def action_poll_res_user(self):
     #     print("hi zaki")

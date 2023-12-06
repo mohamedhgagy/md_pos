@@ -45,7 +45,7 @@ class PosConfig(models.Model):
                 response = self._get_pos_info(account_id=last_shop_id.md_account_id + 1)
             else:
                 endpoint = '/mdsa/API/POS_LIST.php'
-                response = self.company._send_request(headers=self.company.default_headres, endpoint=endpoint)
+                response = self.company._send_request(headers=self.company.default_headers, endpoint=endpoint)
             self._proceed_response(response)
 
     def _get_pos_info(self, account_id):
@@ -54,7 +54,7 @@ class PosConfig(models.Model):
             "account_id": account_id
         }
         endpoint = '/mdsa/API/POS_info.php'
-        response = self.company._send_request(payload=payload, headers=self.company.default_headres, endpoint=endpoint)
+        response = self.company._send_request(payload=payload, headers=self.company.default_headers, endpoint=endpoint)
         return response
 
     def _proceed_response(self, response):

@@ -32,7 +32,7 @@ class ResCompany(models.Model):
             return False
 
     @property
-    def default_headres(self):
+    def default_headers(self):
         return {'Token': self.md_token}
 
     def action_authenticate(self):

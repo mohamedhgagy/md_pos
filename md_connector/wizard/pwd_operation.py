@@ -24,6 +24,10 @@ class pwdOperation(models.TransientModel):
     def md_user(self):
         return self.env['res.users'].sudo()
 
+    @property
+    def md_product(self):
+        return self.env['product.template'].sudo()
+
     def pwd_execute(self):
         pwd = self.pwd_instance_id
         if self.operation == 'sync_users':
@@ -36,7 +40,7 @@ class pwdOperation(models.TransientModel):
         elif self.operation == 'sync_categories':
             pwd.get_categories_methods()
         elif self.operation == 'sync_products':
-            pwd.with_context({'is_modifier': False}).get_products_methods()
+            self.md_product.action_poll_products(pwd)
         elif self.operation == 'sync_orders':
             pwd.get_orders_methods(self.from_date)
         else:

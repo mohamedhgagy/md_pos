@@ -30,7 +30,7 @@ class ResUser(models.Model):
                 response = self._get_user_info(account_id=last_user_id.md_account_id + 1)
             else:
                 endpoint = '/mdsa/API/Rep_List.php'
-                response = connector._send_request(headers=connector.default_headres, endpoint=endpoint)
+                response = connector._send_request(headers=connector.default_headers, endpoint=endpoint)
 
             self._proceed_response(response, connector)
 
@@ -40,7 +40,7 @@ class ResUser(models.Model):
             "account_id": account_id
         }
         endpoint = '/mdsa/API/Rep_info.php'
-        response = connector._send_request(payload=payload, headers=connector.default_headres, endpoint=endpoint)
+        response = connector._send_request(payload=payload, headers=connector.default_headers, endpoint=endpoint)
         return response
 
     def _get_super_user_vals(self, user_obj, connector) -> dict:
