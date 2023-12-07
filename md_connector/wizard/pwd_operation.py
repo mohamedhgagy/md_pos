@@ -17,6 +17,7 @@ class pwdOperation(models.TransientModel):
                                   # ('sync_inventory_items', 'Import Inventory Items'),
                                   # ('sync_modifier_products', 'Import Modifier Product'),
                                   ('sync_purchase_order', 'Import Purchase Order'),
+                                  ('sync_pricelist', 'Import Pricelists'),
                                   # ('sync_transactions', 'Import Transactions'),
                                   ], default="sync_branch", required=True)
 
@@ -28,23 +29,31 @@ class pwdOperation(models.TransientModel):
     def md_product(self):
         return self.env['product.template'].sudo()
 
+    @property
+    def md_pricelist(self):
+        return self.env['product.pricelist'].sudo()
+
     def pwd_execute(self):
         pwd = self.pwd_instance_id
-        if self.operation == 'sync_users':
-            self.md_user.action_poll_res_user(pwd)
-            # pwd.get_import_users()
-        if self.operation == 'sync_branch':
-            pwd.get_branches()
-        elif self.operation == 'sync_payment_method':
-            pwd.get_payment_methods()
-        elif self.operation == 'sync_categories':
-            pwd.get_categories_methods()
-        elif self.operation == 'sync_products':
-            self.md_product.action_poll_products(pwd)
-        elif self.operation == 'sync_orders':
-            pwd.get_orders_methods(self.from_date)
-        else:
-            pass
+        if pwd and pwd.is_valid_token:
+            if self.operation == 'sync_users':
+                self.md_user.action_poll_res_user(pwd)
+                # pwd.get_import_users()
+            if self.operation == 'sync_branch':
+                pwd.get_branches()
+            elif self.operation == 'sync_payment_method':
+                pwd.get_payment_methods()
+            elif self.operation == 'sync_categories':
+                pwd.get_categories_methods()
+            elif self.operation == 'sync_products':
+                self.md_product.action_poll_products(pwd)
+            elif self.operation == 'sync_orders':
+                pwd.get_orders_methods(self.from_date)
+            elif self.operation == 'sync_pricelist':
+                self.md_pricelist.action_poll_pricelist(connector=pwd)
+
+            else:
+                pass
         # elif self.operation == 'sync_inventory_items':
         #     pwd.get_inventory_items()
         # elif self.operation == 'sync_modifier_products':

@@ -54,14 +54,7 @@ class ProductTemplate(models.Model):
                                     products_vals_list.append(prepared_product_vals)
                                     product_ids.append(prd_id)
                                     sku_references_list.append(prd_sku_ref)
-                                # if len(products_vals_list) == 50:
-                                #     break
-                                    # product_id = self.search([('default_code', '=', prd_sku_ref),
-                                    #                           ('md_product_id', '=', prd_id)], limit=1)
-                                    # if not product_id:
-                                    #     self.create(prepared_product_vals)
-                                    # else:
-                                    #     self.update(prepared_product_vals)
+
                 exists_product_ids = self.env[self._name].sudo().search([('default_code', 'in', sku_references_list),
                                                                          ('md_product_id', 'in', product_ids)])
 

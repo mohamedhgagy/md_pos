@@ -9,3 +9,4 @@ from . import res_user
 # from . import setting
 from . import res_partner
 from . import product_template
+from . import pricelist
