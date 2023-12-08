@@ -10,3 +10,4 @@ from . import res_user
 from . import res_partner
 from . import product_template
 from . import pricelist
+from . import pricelist_item

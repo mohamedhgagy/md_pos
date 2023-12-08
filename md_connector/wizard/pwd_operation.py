@@ -51,7 +51,6 @@ class pwdOperation(models.TransientModel):
                 pwd.get_orders_methods(self.from_date)
             elif self.operation == 'sync_pricelist':
                 self.md_pricelist.action_poll_pricelist(connector=pwd)
-
             else:
                 pass
         # elif self.operation == 'sync_inventory_items':

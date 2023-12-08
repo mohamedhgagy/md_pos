@@ -14,10 +14,11 @@ class Pricelist(models.Model):
 
     @property
     def endpoint_pricelist_info(self):
-        return '/mdsa/API/Products_info.php'
+        return 'mdsa/API/channel_Info.php'
 
     @api.model
     def action_poll_pricelist(self, connector):
+
         response = connector._send_request(endpoint=self.endpoint_pricelist_lst, headers=connector.default_headers)
         self._proceed_response(response, connector)
 
@@ -31,8 +32,13 @@ class Pricelist(models.Model):
                                                                         pricelist.get('channel_name'))], limit=1)
                     if not pricelist_id:
                         prepared_priceslists.append(self._prepare_pricelist_vals(pricelist, connector.company_id.id))
+                    else:
+                        self.env['product.pricelist.item'].sudo().action_poll_pricelist_items(pricelist_id, connector)
+
                 if prepared_priceslists:
-                    self.create(prepared_priceslists)
+                    pricelist_ids = self.create(prepared_priceslists)
+                    for pricelist in pricelist_ids:
+                        self.env['product.pricelist.item'].sudo().action_poll_pricelist_items(pricelist, connector)
 
     def _prepare_pricelist_vals(self, pricelist, company_id):
         name = pricelist.get('channel_name')
