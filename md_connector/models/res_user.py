@@ -160,12 +160,14 @@ class ResUser(models.Model):
                             user_vals_list.append(prepared_user_vals)
                         if user_object and user_id:
                             user_id.update(prepared_user_vals)
-                            user_id._handle_create_employee()
+                            if not user_id.employee_id:
+                                user_id.action_create_employee()
 
                 if user_vals_list:
                     for vals in user_vals_list:
                         user_id = self.create(vals)
-                        user_id._handle_create_employee()
+                        if not user_id.employee_id:
+                            user_id.action_create_employee()
             # else:
             #     user_info = response[0].get('Rep_info')
             #     if user_info:
@@ -178,11 +180,10 @@ class ResUser(models.Model):
         if not user_vals:
             return {}
 
-        password = user_vals.get('Representative_Number', '') + user_vals.get('Mobile', '')
         user_vals_dict = {
             'Representative_Number': user_vals.get('Representative_Number', False),
-            'login': user_vals.get('Email', False),
-            'password': password,
+            'login': user_vals.get('account_id', False),
+            'password': user_vals.get('account_id', False),
 
             'name': user_vals.get('Representative_En_Name', False),
             'name_ar': user_vals.get('Representative_Arabic_Name', False),
@@ -206,12 +207,7 @@ class ResUser(models.Model):
 
         return user_vals_dict
 
-    def _handle_create_employee(self):
-        """
-        used to create employee for user and link employee with account, journal, warehouse
-        :return: None
-        """
-        if not self.employee_id:
-            self.action_create_employee()
+    def action_create_employee(self):
+        super(ResUser, self).action_create_employee()
         if self.employee_id:
             self.employee_id.action_automate_creation()

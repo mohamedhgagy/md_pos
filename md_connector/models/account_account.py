@@ -11,9 +11,10 @@ class AccountAccount(models.Model):
         if not employee:
             return {}
         return {
-            'code': employee.code if employee.code else employee.id,
+            'code': employee.md_code,
             'name': employee.name,
-            'type': 'income',
+            'account_type': 'asset_cash',
             'company_id': employee.company_id.id,
             'currency_id': employee.company_id.currency_id.id,
+            'reconcile': True
         }
