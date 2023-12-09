@@ -27,7 +27,7 @@ class PricelistItem(models.Model):
             pricelist_items = response[0].get('Channel info', []) or []
             prepared_item_list = []
             for item in pricelist_items:
-                if item.get('ProductsID') not in pricelist_id.item_ids.mapped('product_id.md_product_id'):
+                if int(item.get('ProductsID'), 0) not in pricelist_id.item_ids.mapped('product_id.md_product_id'):
                     prepared_item_list.append(self._prepare_pricelist_item_vals(item, pricelist_id))
             if prepared_item_list:
                 pricelist_id.item_ids = [(0, 0, p_item) for p_item in prepared_item_list]
