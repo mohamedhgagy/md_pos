@@ -10,6 +10,7 @@ class pwdOperation(models.TransientModel):
     operation = fields.Selection([('sync_users', 'Import Users'),
                                   ('sync_branch', 'Import Branch'),
                                   ('sync_payment_method', 'Import Payment Methods'),
+                                  ('sync_pos', 'Import Pos'),
                                   ('sync_categories', 'Import Categories'),
                                   ('sync_products', 'Import Products'),
                                   ('sync_orders', 'Import Orders'),
@@ -33,6 +34,10 @@ class pwdOperation(models.TransientModel):
     def md_pricelist(self):
         return self.env['product.pricelist'].sudo()
 
+    @property
+    def md_partner(self):
+        return self.env['res.partner'].sudo()
+
     def pwd_execute(self):
         pwd = self.pwd_instance_id
         if pwd and pwd.is_valid_token:
@@ -51,6 +56,8 @@ class pwdOperation(models.TransientModel):
                 pwd.get_orders_methods(self.from_date)
             elif self.operation == 'sync_pricelist':
                 self.md_pricelist.action_poll_pricelist(connector=pwd)
+            elif self.operation == 'sync_pos':
+                self.md_partner.action_poll_pos(connector=pwd)
             else:
                 pass
         # elif self.operation == 'sync_inventory_items':

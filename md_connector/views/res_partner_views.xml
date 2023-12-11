@@ -3,11 +3,10 @@
     <record id="view_res_partner_form_inherit" model="ir.ui.view">
         <field name="name">res.partner.form.inherit</field>
         <field name="model">res.partner</field>
-        <field name="inherit_id" ref="point_of_sale.view_partner_property_form"/>
+        <field name="inherit_id" ref="base.view_partner_form"/>
         <field name="arch" type="xml">
-            <xpath expr="//sheet" position="inside">
-                <notebook>
-                <page string="Info">
+            <xpath expr="//notebook" position="inside">
+                <page string="MD Info">
                     <group>
                         <field name="md_pos_id" readonly="1"/>
                         <field name="md_account_id" readonly="1"/>
@@ -32,7 +31,7 @@
                         <field name="status" readonly="1"/>
                     </group>
                 </page>
-                <page string="Address" name="address">
+                <page string="MD Address" name="address">
                     <group>
                         <field name="city"/>
                         <field name="region"/>
@@ -41,17 +40,8 @@
                         <field name="latitude" />
                     </group>
                 </page>
-                </notebook>
             </xpath>
         </field>
     </record>
 
-
-    <record id="action_server_pos_config" model="ir.actions.server">
-            <field name="name">Poll Pos</field>
-            <field name="model_id" ref="point_of_sale.model_pos_config"/>
-            <field name="binding_model_id" eval="False"/>
-            <field name="state">code</field>
-            <field name="code">action = model.action_poll_pos()</field>
-        </record>
 </odoo>

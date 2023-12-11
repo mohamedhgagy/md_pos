@@ -30,6 +30,11 @@ class HrEmployee(models.Model):
                 emp.journal_id = emp.action_create_journal()
             if not emp.warehouse_id:
                 emp.warehouse_id = emp.action_create_warehouse()
+                try:
+                    if emp.warehouse_id:
+                        emp.user_id.property_warehouse_id = emp.warehouse_id.id
+                except Exception as ex:
+                    ...
 
     def action_create_bank_account(self):
         account = self.env['account.account'].sudo()

@@ -18,7 +18,7 @@ class ResPartner(models.Model):
     owner_name = fields.Char(string='Owner Name')
     manager_name = fields.Char(string='Manager Name')
     super_name = fields.Char(string='Super Name')
-    supervisor_id = fields.Char(string='Supervisor ID')
+    supervisor_id = fields.Many2one('res.users')
     supervisor_email = fields.Char(string='Supervisor Email')
     supercisor_phone = fields.Char(string='Supervisor Phone')
     rep_name = fields.Char(string='Representative Name')
@@ -38,27 +38,30 @@ class ResPartner(models.Model):
     def company(self):
         return self.env.company
 
-    @api.model
-    def action_poll_pos(self):
-        if self.company.is_valid_token:
-            last_shop_id = self.search([('md_account_id', '!=', False)], order='md_account_id desc', limit=1)
-            if last_shop_id:
-                response = self._get_pos_info(account_id=last_shop_id.md_account_id + 1)
-            else:
-                endpoint = '/mdsa/API/POS_LIST.php'
-                response = self.company._send_request(headers=self.company.default_headers, endpoint=endpoint)
-            self._proceed_response(response)
+    @property
+    def endpoint_pos_lst(self):
+        return '/mdsa/API/POS_LIST.php'
 
-    def _get_pos_info(self, account_id):
+    @property
+    def end_point_pos_info(self):
+        return '/mdsa/API/POS_info.php'
+
+    @api.model
+    def action_poll_pos(self, connector):
+        response = connector._send_request(headers=connector.default_headers,
+                                              endpoint=self.endpoint_pos_lst)
+        self._proceed_response(response, connector)
+
+    def _get_pos_info(self, account_id, connector):
         """search for pos with account_id"""
         payload = {
             "account_id": account_id
         }
-        endpoint = '/mdsa/API/POS_info.php'
-        response = self.company._send_request(payload=payload, headers=self.company.default_headers, endpoint=endpoint)
+        response = connector._send_request(payload=payload, headers=connector.default_headers,
+                                              endpoint=self.end_point_pos_info)
         return response
 
-    def _proceed_response(self, response):
+    def _proceed_response(self, response, connector):
         if response and response[0].get('isSuccess', False):
             pos_ids = response[0].get('POSIDs', [])
             if pos_ids:
@@ -67,13 +70,13 @@ class ResPartner(models.Model):
                     account_id = pos.get('account_id', False)
                     if account_id:
                         account_id = int(account_id)
-                        pos_list = self._get_pos_info(account_id)
+                        pos_list = self._get_pos_info(account_id, connector)
                         pos_object = {}
                         if pos_list and pos_list[0].get('isSuccess', False):
                             pos_object = pos_list[0].get('POS_info', [{}])[0]
 
                         pos_id = self.search([('md_account_id', '=', account_id)], order='md_account_id desc', limit=1)
-                        prepared_pos_vals = self._prepare_pos_vals(pos_object)
+                        prepared_pos_vals = self._prepare_pos_vals(pos_object, connector.company_id)
                         if pos_object and not pos_id:
                             pos_vals_list.append(prepared_pos_vals)
                         if pos_object and pos_id:
@@ -82,44 +85,54 @@ class ResPartner(models.Model):
                 if pos_vals_list:
                     for pos_val in pos_vals_list:
                         self.create(pos_val)
-            else:
-                pos_info = response[0].get('POS_info')
-                if pos_info:
-                    prepared_pos_vals = self._prepare_pos_vals(pos_info[0])
-                    self.create(prepared_pos_vals)
 
-    def _prepare_pos_vals(self, pos) -> dict:
+    def _prepare_pos_vals(self, pos, company) -> dict:
         if not pos:
             return {}
         contracting_date = pos.get('Contracting_Date', False)
         contracting_date = "1900-01-01" if contracting_date == "0000-00-00" else contracting_date
+
         # TODO: assign location
-        return {
+        pos_vals = {
+            'company_type': 'company',
             'md_pos_id': pos.get('POS_ID', False),
             'name': pos.get('Name_En', False),
             'name_ar': pos.get('Name_AR', False),
             'md_account_id': pos.get('account_id', False),
             'city': pos.get('City', False),
             'district': pos.get('Region', False),
+            'street2': pos.get('Region', False),
             'region': pos.get('district', False),
+            'street': pos.get('district', False),
             'owner_name': pos.get('owner_name', False),
             'manager_name': pos.get('Manager_Name', False),
             'super_name': pos.get('super_Name', False),
-            'supervisor_id': pos.get('Supervisor_ID', False),
             'supervisor_email': pos.get('Supervisor_Email', False),
             'supercisor_phone': pos.get('Supercisor_Phone', False),
             'rep_name': pos.get('Rep_Name', False),
             'rep_id': pos.get('Rep_ID', False),
             'special_access_group': pos.get('Special_Access_Group', False),
-            'pos_phone': pos.get('POS_Phone', False),
+            'phone': pos.get('POS_Phone', False),
             'contracting_date': contracting_date,
             'license_cr': pos.get('License/CR', False),
             'registration': pos.get('Registration', False),
             'channel_name': pos.get('Channel_Name', False),
             'pool_name': pos.get('POOL_Name', False),
             'status': pos.get('Status', False),
+            'company_id': company.id
 
         }
+        user_rep_number = pos.get('Rep_ID', False)
+        if user_rep_number:
+            user_id = self.env['res.users'].sudo().search([('Representative_Number', '=', user_rep_number)], limit=1)
+            pos_vals.update(user_id=user_id.id, supervisor_id=user_id.supervisor_user_id.id)
+        pricelist_name = pos.get('Channel_Name', False)
+        if pricelist_name:
+            pricelist_id = self.env['product.pricelist'].sudo().search([('md_channel_name', '=', pricelist_name)],
+                                                                       limit=1)
+            if pricelist_id:
+                pos_vals.update(property_product_pricelist=pricelist_id.id)
+        return pos_vals
 
     def _get_partner_vals(self, user_vals) -> dict:
         print("user88", user_vals)
