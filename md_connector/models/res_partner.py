@@ -35,10 +35,6 @@ class ResPartner(models.Model):
     md_account_id = fields.Integer()
 
     @property
-    def company(self):
-        return self.env.company
-
-    @property
     def endpoint_pos_lst(self):
         return '/mdsa/API/POS_LIST.php'
 
@@ -49,7 +45,7 @@ class ResPartner(models.Model):
     @api.model
     def action_poll_pos(self, connector):
         response = connector._send_request(headers=connector.default_headers,
-                                              endpoint=self.endpoint_pos_lst)
+                                           endpoint=self.endpoint_pos_lst)
         self._proceed_response(response, connector)
 
     def _get_pos_info(self, account_id, connector):
@@ -58,7 +54,7 @@ class ResPartner(models.Model):
             "account_id": account_id
         }
         response = connector._send_request(payload=payload, headers=connector.default_headers,
-                                              endpoint=self.end_point_pos_info)
+                                           endpoint=self.end_point_pos_info)
         return response
 
     def _proceed_response(self, response, connector):
@@ -133,21 +129,3 @@ class ResPartner(models.Model):
             if pricelist_id:
                 pos_vals.update(property_product_pricelist=pricelist_id.id)
         return pos_vals
-
-    def _get_partner_vals(self, user_vals) -> dict:
-        print("user88", user_vals)
-        if not user_vals:
-            return {}
-        # contracting_date = user.get('Contracting_Date', False)
-        # contracting_date = "1900-01-01" if contracting_date == "0000-00-00" else contracting_date
-        # TODO: assign location
-        partner_vals = {
-            'name': user_vals.get('name', False),
-            'name_ar': user_vals.get('name_ar', False),
-            'email': user_vals.get('email', False),
-            'city': user_vals.get('city', False),
-            'mobile': user_vals.get('mobile', False),
-            # 'default_company_id': user_vals.get('company_id', False),
-            'company_id': user_vals.get('company_id', False),
-        }
-        return partner_vals
